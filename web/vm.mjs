@@ -7,7 +7,9 @@ export const wrap = v => typeof v === 'number' ? num(v) : Array.isArray(v) || Ar
 export class Scope {
   constructor(outer = null) { this.outer = outer; this.store = new Map(); this.owned = new Set(); }
   create(n,v) { this.store.set(n,v); this.owned.add(n); }
-  get(n) { for(let s=this;s;s=s.outer) if(s.store.has(n)) return s.store.get(n); throw new Error(`Identifier not found: ${n}`); }
+  // Return the binding scope so a stored undefined value is distinct from absence.
+  resolve(n) { for(let s=this;s;s=s.outer) if(s.store.has(n)) return s; return null; }
+  get(n) { const s=this.resolve(n); if(s)return s.store.get(n); throw new Error(`Identifier not found: ${n}`); }
   set(n,v) { let s=this; while(s && !s.owned.has(n)) { s.store.set(n,v); s=s.outer; } if(!s) throw new Error(`Identifier not found: ${n}`); s.store.set(n,v); }
 }
 export const module = scope => ({type:'module', scope});
@@ -52,7 +54,7 @@ export class VirtualMachine {
     const frame=(p,e,b,base=stack.length)=>({p,e,b,base,ip:0,loops:[]});
     frames.push(frame(program,env,builtins,0));
     const args=n=>stack.splice(stack.length-n,n);
-    const load=(f,n)=>{ try{return f.e.get(n);}catch(e){ if(f.b.has(n))return f.b.get(n);throw e; } };
+    const load=(f,n)=>{ const s=f.e.resolve(n);if(s)return s.store.get(n);if(f.b.has(n))return f.b.get(n);throw new Error(`Identifier not found: ${n}`); };
     const call=async(f,fn,a)=>{
       if(typeof fn==='function') { stack.push(await fn(...a));return; }
       if(fn?.type!=='closure') throw new Error('Not a function');
