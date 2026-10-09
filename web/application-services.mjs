@@ -1,5 +1,4 @@
 import {
-  checkPixels,
   checkBytes,
   strictText,
   TextEditor,
@@ -147,10 +146,6 @@ export class BrowserServices {
         "User activation required; input/download fallbacks",
       ),
       directoryPicker: capability(!!globalThis.showDirectoryPicker),
-      printing: capability(
-        !!globalThis.print,
-        "Browser owns dialog; completion/cancellation cannot be confirmed",
-      ),
       imageAcquisition: capability(
         true,
         "Image picker; mobile browsers may offer camera capture",
@@ -286,32 +281,6 @@ export class BrowserServices {
           signal,
         )
       : null;
-  }
-  async printImage(image, signal) {
-    signal?.throwIfAborted();
-    checkPixels(image.width, image.height);
-    const data = await this.images.encode(image, "Png", {}, signal),
-      url = URL.createObjectURL(new Blob([data], { type: "image/png" })),
-      frame = document.createElement("iframe");
-    frame.title = "星泉列印文件";
-    frame.style.display = "none";
-    try {
-      await new Promise((resolve, reject) => {
-        frame.onload = resolve;
-        frame.onerror = reject;
-        frame.srcdoc = `<!doctype html><html lang="zh-Hant"><title>星泉作品</title><style>@page{margin:12mm}img{max-width:100%;max-height:95vh}</style><img src="${url}" alt="星泉作品">`;
-        document.body.append(frame);
-      });
-      await Promise.all(
-        Array.from(frame.contentDocument.images, (i) => i.decode()),
-      );
-      signal?.throwIfAborted();
-      frame.contentWindow.focus();
-      frame.contentWindow.print();
-    } finally {
-      frame.remove();
-      URL.revokeObjectURL(url);
-    }
   }
   updateAccessibility(nodes) {
     if (!Array.isArray(nodes) || nodes.length > 4096)

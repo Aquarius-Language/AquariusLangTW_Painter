@@ -26,7 +26,7 @@ function 啟用保護(主機){
  const 原呼叫=主機.vm.invoke.bind(主機.vm);主機.vm.作業數=0;
  主機.vm.invoke=async(...參數)=>{主機.vm.作業數++;try{return await 原呼叫(...參數);}finally{主機.vm.作業數--;}};
  document.addEventListener('contextmenu',事件=>事件.preventDefault(),{signal:主機.signal});
- document.addEventListener('keydown',事件=>{if((事件.ctrlKey||事件.metaKey)&&['s','o','p','n','a','z','y'].includes(事件.key.toLowerCase()))事件.preventDefault();},{signal:主機.signal});
+ document.addEventListener('keydown',事件=>{if((事件.ctrlKey||事件.metaKey)&&['s','o','n','a','z','y'].includes(事件.key.toLowerCase()))事件.preventDefault();},{signal:主機.signal});
  const 畫布=()=>主機.processing.dom;
  document.addEventListener('pointerdown',事件=>{if(事件.target===畫布()){畫布().style.touchAction='none';畫布().setPointerCapture?.(事件.pointerId);}},{signal:主機.signal});
  document.addEventListener('pointerup',事件=>{if(事件.target===畫布()&&畫布().hasPointerCapture?.(事件.pointerId))畫布().releasePointerCapture(事件.pointerId);},{signal:主機.signal});

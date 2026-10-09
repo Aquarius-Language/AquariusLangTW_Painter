@@ -557,9 +557,6 @@ export class BrowserApplication {
       const r = await this.services.pickDirectory(this.signal());
       return r ? this.resource(r) : null;
     });
-    b(app, "Application", "Print", (i) =>
-      this.services.printImage(this.own(i), this.signal()),
-    );
     b(app, "Application", "AcquireImage", async () => {
       const i = await this.services.acquireImage(this.signal());
       return i ? this.image(i) : null;
