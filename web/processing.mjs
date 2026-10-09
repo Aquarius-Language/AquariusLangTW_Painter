@@ -57,7 +57,7 @@ export class Processing {
     // frame's dimensions would misplace events arriving during a viewport resize.
     const area=document.getElementById('surfaces');for(const type of ['pointermove','pointerdown','pointerup'])area.addEventListener(type,e=>{if(!this.dom)return;const r=this.dom.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;const fields={pmouseX:this.module.scope.get('mouseX'),pmouseY:this.module.scope.get('mouseY'),mouseX:x,mouseY:y,mouseButton:num(e.button,'int')};if(type!=='pointermove')fields.isMousePressed=type==='pointerdown';queue(type==='pointerdown'?'mousePressed':type==='pointerup'?'mouseReleased':e.buttons?'mouseDragged':'mouseMoved',fields);if(type==='pointerup')queue('mouseClicked',fields);},{signal});
     area.addEventListener('wheel',e=>{queue('mouseWheel',{wheelCount:e.deltaY/100});e.preventDefault();},{signal,passive:false});
-    this.textarea=document.createElement('textarea');Object.assign(this.textarea.style,{position:'fixed',opacity:'0.01',width:'1px',height:'1px',pointerEvents:'none'});this.textarea.setAttribute('aria-label','星泉文字輸入');document.body.append(this.textarea);
+    this.textarea=document.createElement('textarea');Object.assign(this.textarea.style,{position:'fixed',opacity:'0.01',width:'1px',height:'1px',pointerEvents:'none'});this.textarea.setAttribute('aria-label','Aquarius text input');document.body.append(this.textarea);
     this.textarea.addEventListener('input',e=>{if(!e.isComposing&&e.data){queue('textInput',{inputText:e.data});for(const char of e.data)queue('keyTyped',{key:char});this.textarea.value='';}},{signal});for(const [type,name] of [['compositionstart','compositionStarted'],['compositionupdate','compositionUpdated'],['compositionend','compositionEnded']])this.textarea.addEventListener(type,e=>{this.composing=type!=='compositionend';queue(name,{compositionText:this.composing?e.data:'',compositionCursor:this.composing?e.data.length:0,isComposing:this.composing});},{signal});
     s('textInputEnabled',false);
   }
@@ -67,7 +67,7 @@ export class Processing {
     c.model=mat4.create();c.matrices=[];c.style.lights=[];c.style.lit=false;
     // Attachments and public dimensions are ready before callbacks can draw/read.
     if(resized){this.redraw=true;if(c.pixelWidth>0&&c.pixelHeight>0&&this.events.has('windowResized'))await this.host.vm.invoke(this.events.get('windowResized'));}
-    for(const e of this.eventQueue.splice(0)){for(const [n,v] of Object.entries(e.fields))this.host.set(this.module,n,v);this.redraw=true;if(this.events.has(e.name)){try{await this.host.vm.invoke(this.events.get(e.name));}catch(錯誤){if(this.host.signal.aborted)throw 錯誤;console.warn('星泉操作未完成：',錯誤);for(const 畫布 of this.canvases){if(畫布.drawing){畫布.target?.flush();畫布.drawing=false;}}const 處理=this.events.get(e.name).env.get('處理錯誤');await this.host.vm.invoke(處理);}}}
+    for(const e of this.eventQueue.splice(0)){for(const [n,v] of Object.entries(e.fields))this.host.set(this.module,n,v);this.redraw=true;if(this.events.has(e.name))await this.host.vm.invoke(this.events.get(e.name));}
   }
   async endFrame(){if(this.screen.pixelWidth>0&&this.screen.pixelHeight>0)await this.presentation.present(this.screen.target);}
   dispose(){this.exiting=true;this.abort.abort();this.textarea.remove();for(const c of this.canvases)c.dispose();for(const image of this.images)image.texture?.destroy();for(const t of this.textCache.values())t.texture.destroy();this.screen.dispose();this.presentation?.dispose();this.surface?.dispose();}

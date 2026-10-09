@@ -1,4 +1,5 @@
 import {
+  checkPixels,
   checkBytes,
   strictText,
   TextEditor,
@@ -146,6 +147,10 @@ export class BrowserServices {
         "User activation required; input/download fallbacks",
       ),
       directoryPicker: capability(!!globalThis.showDirectoryPicker),
+      printing: capability(
+        !!globalThis.print,
+        "Browser owns dialog; completion/cancellation cannot be confirmed",
+      ),
       imageAcquisition: capability(
         true,
         "Image picker; mobile browsers may offer camera capture",
@@ -282,6 +287,32 @@ export class BrowserServices {
         )
       : null;
   }
+  async printImage(image, signal) {
+    signal?.throwIfAborted();
+    checkPixels(image.width, image.height);
+    const data = await this.images.encode(image, "Png", {}, signal),
+      url = URL.createObjectURL(new Blob([data], { type: "image/png" })),
+      frame = document.createElement("iframe");
+    frame.title = "Aquarius print document";
+    frame.style.display = "none";
+    try {
+      await new Promise((resolve, reject) => {
+        frame.onload = resolve;
+        frame.onerror = reject;
+        frame.srcdoc = `<!doctype html><title>Aquarius document</title><style>@page{margin:12mm}img{max-width:100%;max-height:95vh}</style><img src="${url}" alt="Document">`;
+        document.body.append(frame);
+      });
+      await Promise.all(
+        Array.from(frame.contentDocument.images, (i) => i.decode()),
+      );
+      signal?.throwIfAborted();
+      frame.contentWindow.focus();
+      frame.contentWindow.print();
+    } finally {
+      frame.remove();
+      URL.revokeObjectURL(url);
+    }
+  }
   updateAccessibility(nodes) {
     if (!Array.isArray(nodes) || nodes.length > 4096)
       throw new Error("Invalid accessibility node list");
@@ -308,7 +339,7 @@ export class BrowserServices {
     }
     if (!this.accessibility) {
       this.accessibility = document.createElement("div");
-      this.accessibility.setAttribute("aria-label", "星泉塗鴉室");
+      this.accessibility.setAttribute("aria-label", "Aquarius application");
       Object.assign(this.accessibility.style, {
         position: "fixed",
         width: "1px",

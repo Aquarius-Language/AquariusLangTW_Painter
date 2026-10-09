@@ -73,7 +73,7 @@ export class BrowserWindow {
         if (
           e.target !== this.canvas &&
           e.target !==
-            document.querySelector('textarea[aria-label="星泉文字輸入"]')
+            document.querySelector('textarea[aria-label="Aquarius text input"]')
         )
           return;
         this.event(
