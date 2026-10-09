@@ -22,6 +22,14 @@ node 預覽伺服器.mjs 8080
 
 `啟動.ps1` 優先使用 PATH 的 Node.js；未找到時讀取此電腦已安裝的 Codex 套件執行環境。伺服器僅綁定本機位址，關閉終端機或按 Ctrl+C 可停止。
 
+## 發佈至 GitHub Pages
+
+在 GitHub 儲存庫的 **Settings → Pages → Build and deployment → Source** 選擇 **GitHub Actions**。
+
+`.github/workflows/pages.yml` 會在 `main` 分支的 `web/**` 或工作流程檔案更新時，將已提交的 `web` 資料夾直接發佈。也可在 **Actions → Publish web to GitHub Pages → Run workflow** 選擇 `main` 手動發佈。
+
+修改星泉原始碼後，請先執行 `建置.ps1` 並提交更新的 `web` 輸出；發佈流程不會重新編譯原始碼。網站網址為 <https://Aquarius-Language.github.io/AquariusLang_Painter/>，實際部署連結也會顯示於工作流程的 `github-pages` 環境。
+
 ## 功能
 
 | 類別 | 已實作的操作 |
