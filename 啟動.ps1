@@ -2,5 +2,5 @@
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
-    & node 預覽伺服器.mjs $埠
+    & node 工具/預覽伺服器.mjs $埠
 } finally { Pop-Location }

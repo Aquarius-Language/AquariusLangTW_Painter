@@ -1,6 +1,6 @@
 import { readFile as 讀取 } from 'node:fs/promises';
 import 斷言 from 'node:assert/strict';
-const 檔案=['星泉塗鴉室.aqua','函式庫/作品引擎.aqua','函式庫/星泉介面.aqua'];
+const 檔案=['星泉塗鴉室.aqua','作品引擎.aqua','星泉介面.aqua'];
 let 宣告數=0,呼叫數=0;
 for(const 檔 of 檔案){
  const 內容=(await 讀取(檔,'utf8')).replace(/"(?:\\.|[^"\\])*"/g,'""').replace(/#[^\n]*/g,'');

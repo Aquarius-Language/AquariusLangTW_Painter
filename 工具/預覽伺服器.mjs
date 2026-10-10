@@ -2,7 +2,7 @@ import { createServer as 建立伺服器 } from 'node:http';
 import { readFile as 讀取 } from 'node:fs/promises';
 import 路徑 from 'node:path';
 import { fileURLToPath as 檔案路徑 } from 'node:url';
-const 根=路徑.join(路徑.dirname(檔案路徑(import.meta.url)),'web');
+const 根=路徑.join(路徑.dirname(檔案路徑(import.meta.url)),'..','web');
 const 埠=Number(process.argv[2]??8080);
 const 型別={'.html':'text/html; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.wasm':'application/wasm','.txt':'text/plain; charset=utf-8'};
 const 伺服器=建立伺服器(async(請求,回應)=>{

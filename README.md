@@ -4,6 +4,8 @@
 
 **繪圖、工具、文件、圖層與介面邏輯皆在三份 `.aqua` 原始碼中。** 正式星泉編譯器先生成 `.wasm` WebAssembly，再輸出至相對目錄 **`./web`**；瀏覽器執行 WebAssembly，沒有用 JavaScript 重寫繪圖應用程式。
 
+三份 AquariusLang `.aqua` 原始碼均位於專案根目錄；輔助建置與預覽的 `.mjs` 腳本集中於 `工具/`，驗證腳本位於 `測試/`。
+
 ## 開啟已建置版本
 
 在本專案目錄執行：
@@ -15,7 +17,7 @@
 開啟 <http://localhost:8080>。另一種方式：
 
 ```powershell
-node 預覽伺服器.mjs 8080
+node 工具/預覽伺服器.mjs 8080
 ```
 
 請透過 localhost 或 HTTPS 提供整個 `web` 資料夾；直接雙擊 `web/index.html` 的檔案網址無法載入 WebAssembly 與主機模組。需要瀏覽器能取得 WebGPU 裝置。圖片編碼器、WebAssembly 主機及相關相依套件都在 `web`，不依賴 CDN 或應用程式伺服器。
@@ -95,7 +97,7 @@ node 預覽伺服器.mjs 8080
 
 ## 繁體中文原始碼及固定協定
 
-主程式、作品引擎的變數、函式、參數、關鍵字、呼叫名稱與介面文案均使用繁體中文。函式庫使用官方的繁體中文方法別名；原生功能經 `函式庫/星泉介面.aqua` 的中文介面供應。
+主程式、作品引擎的變數、函式、參數、關鍵字、呼叫名稱與介面文案均使用繁體中文。函式庫使用官方的繁體中文方法別名；原生功能經根目錄 `星泉介面.aqua` 的中文介面供應。
 
 **現有 AquariusLang 無法讓所有底層識別字完全沒有拉丁字母。** 官方匯入 ID（例如 `Processing`、`Images`、`Files`）、事件、資料欄位、編碼、格式、渲染器與系統字型 ID 尚無完整中文協定別名。`Window` 兩個圖片橋接別名本身也包含 `Processing`，因此只取出函式參照，對外改以中文名稱呼叫。這些必要邊界集中在相容層。副檔名 `png`、`aquapaint` 等也是標準檔案協定，不是程式變數或函式名稱。
 
@@ -120,7 +122,7 @@ node 預覽伺服器.mjs 8080
 | 拒絕選檔／剪貼簿等操作會拋出錯誤，語言沒有例外處理語法 | 註冊官方 Processing 的 `error` 事件；桌面與網頁皆可顯示中文狀態並繼續編輯。 |
 | 瀏覽器 Processing 的影像／畫布集合保留物件直到整個執行階段結束 | 官方桌面與網頁主機在影格邊界追蹤執行中環境、原生呼叫參數、閉包、歷程及圖層，回收不再使用的畫布與影像。 |
 
-`網頁封裝.mjs` 保留外殼本地化與本專案的列印服務移除，並載入 `即時主機封裝.mjs`。後者調整瀏覽器主機的時間切片、影格排程、GPU 呈現及畫布透明度標記；每次重建均會套用，主機來源不符預期時會明確失敗。事件恢復、指標擷取、快捷鍵與離屏資源管理仍由 AquariusLang 主機處理；測試使用 `host.runtime` 及官方執行狀態。
+`工具/網頁封裝.mjs` 保留外殼本地化與本專案的列印服務移除，並載入同目錄的 `即時主機封裝.mjs`。後者調整瀏覽器主機的時間切片、影格排程、GPU 呈現及畫布透明度標記；每次重建均會套用，主機來源不符預期時會明確失敗。事件恢復、指標擷取、快捷鍵與離屏資源管理仍由 AquariusLang 主機處理；測試使用 `host.runtime` 及官方執行狀態。
 
 ### 即時互動效能
 
@@ -151,9 +153,10 @@ C:\OfficialProjects\AquariusLangTW\dist\releases\AquariusCompiler-win-x64-202610
 腳本等同於先執行下列官方命令，再本地化及封裝網頁：
 
 ```powershell
-aqua build 星泉塗鴉室.aqua 函式庫/星泉介面.aqua 函式庫/作品引擎.aqua --root . -o 星泉塗鴉室.wasm
-aqua build 星泉塗鴉室.wasm --target web -o web
-node 網頁封裝.mjs
+New-Item -ItemType Directory -Path dist -Force | Out-Null
+aqua build 星泉塗鴉室.aqua 星泉介面.aqua 作品引擎.aqua --root . -o dist/星泉塗鴉室.wasm
+aqua build dist/星泉塗鴉室.wasm --target web -o web
+node 工具/網頁封裝.mjs
 ```
 
 驗證：
@@ -176,13 +179,15 @@ Remove-Item Env:AQUARIUS_BROWSER
 
 ```text
 星泉塗鴉室.aqua              中文介面、工具及輸入流程
-函式庫/星泉介面.aqua         官方 API 的中文相容邊界
-函式庫/作品引擎.aqua         像素、圖層、選取、變換、歷程與文件
-星泉塗鴉室.wasm            已編譯 WebAssembly套件
+星泉介面.aqua                官方 API 的中文相容邊界
+作品引擎.aqua                像素、圖層、選取、變換、歷程與文件
+dist/星泉塗鴉室.wasm       已編譯 WebAssembly 套件
 web/                        已建置的完整靜態網站及第三方授權
 建置.ps1                    可重現的官方編譯流程
-網頁封裝.mjs                產物本地化及瀏覽器生命週期適配
-啟動.ps1、預覽伺服器.mjs     本機預覽
+啟動.ps1                    本機預覽入口
+工具/網頁封裝.mjs           產物本地化及瀏覽器生命週期適配
+工具/即時主機封裝.mjs       瀏覽器主機的即時互動效能調整
+工具/預覽伺服器.mjs         本機預覽伺服器
 測試/                       原始碼與真實瀏覽器整合驗證
 ```
 
@@ -190,4 +195,4 @@ web/                        已建置的完整靜態網站及第三方授權
 
 ## 新版架構建置
 
-建置使用 PATH 中的 `aqua`。執行 `./建置.ps1` 會同時輸出網頁與 `dist/星泉塗鴉室.exe` 自包含 Windows EXE。桌面可用 `aqua run` 執行上列 `.wasm`，網頁由相同檔案輸出。舊 `.bottle` 產物應從原始碼重新編譯。
+建置使用 PATH 中的 `aqua`。執行 `./建置.ps1` 會自動建立 `dist/`，並輸出 `dist/星泉塗鴉室.wasm`、`web/` 網頁與 `dist/星泉塗鴉室.exe` 自包含 Windows EXE。桌面可用 `aqua run dist/星泉塗鴉室.wasm` 執行，網頁由相同檔案輸出。舊 `.bottle` 產物應從原始碼重新編譯。
