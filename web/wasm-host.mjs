@@ -60,10 +60,20 @@ class Session {
   arrayOwner(value,owner){const origin=this.runtime.origins.get(value);if(!Array.isArray(value)||origin?.session!==this)return;let owners=this.arrayOwners.get(origin.reference);if(!owners)this.arrayOwners.set(origin.reference,owners=[]);if(!owners.some(w=>w.deref()===owner))owners.push(new WeakRef(owner));}
   flushDirty(owner=null){let reference;while((reference=this.call('aqua_take_dirty_array'))!==0)this.dirtyArrays.add(reference);for(const item of this.dirtyArrays){const cached=this.objects.get(`6:${item}`)?.deref();if(!cached){this.dirtyArrays.delete(item);this.arrayOwners.delete(item);continue;}if(owner&&!this.arrayOwners.get(item)?.some(w=>w.deref()===owner))continue;this.refresh(6,item,cached);this.dirtyArrays.delete(item);}}
   synchronizeOut(){this.flushDirty();for(const lease of this.scopeLeases){const env=lease.owner.deref();if(lease.mirror&&env)for(const [n,v]of this.bindings(lease.pointer))env.create(n,v);}}
+  yieldTask(){
+    // MessageChannel avoids the nested setTimeout minimum delay (usually 4 ms).
+    if(!this.taskChannel){this.taskChannel=new MessageChannel();this.taskWaiters=[];this.taskChannel.port1.onmessage=()=>this.taskWaiters.shift()?.();}
+    return new Promise(resolve=>{this.taskWaiters.push(resolve);this.taskChannel.port2.postMessage(null);});
+  }
   async run(pointer){
-    const state={pointer,session:this,pending:null};this.runtime.executions.add(state);this.running.push(state);
+    const state={pointer,session:this,pending:null};let sliceStart=performance.now();this.runtime.executions.add(state);this.running.push(state);
     try{while(true){if(this.runtime.cancelled||this.runtime.host.signal?.aborted)throw new Error('Execution cancelled');const previous=this.dispatchState;this.dispatchState=state;let status;try{status=this.call('aqua_run',pointer,4096);}finally{this.dispatchState=previous;}
-      if(status===1){this.collect();if(typeof window!=='undefined')await new Promise(r=>setTimeout(r,0));continue;}
+      if(status===1){
+        // A quantum is an instruction limit, not a reason to sleep. Small UI
+        // callbacks finish in one task; expensive operations yield every 8 ms.
+        if(performance.now()-sliceStart>=8){this.collect();if(typeof window!=='undefined')await this.yieldTask();sliceStart=performance.now();}
+        continue;
+      }
       if(status===2){const pending=state.pending;try{const result=await pending.promise;if(this.runtime.cancelled||this.runtime.host.signal?.aborted)throw new Error('Execution cancelled');const cell=this.call('aqua_value');if(pending.synchronize)this.synchronizeIn();pending.args.forEach((v,i)=>this.write(pending.arguments+i*16,v));this.write(cell,result);this.call('aqua_resume',pointer,cell);}finally{this.runtime.nativeRoots.delete(pending.roots);state.pending=null;}continue;}
       const p=this.call('aqua_result',pointer);if(status===3)throw new Error(this.text(this.int(p+4)));return this.read(p);
     }}finally{this.synchronizeOut();this.call('aqua_release_execution',pointer);this.runtime.executions.delete(state);const i=this.running.indexOf(state);if(i>=0)this.running.splice(i,1);}

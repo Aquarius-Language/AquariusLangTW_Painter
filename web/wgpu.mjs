@@ -60,7 +60,13 @@ class BrowserWgpuSurface {
     if(target.owner!==this.owner||target.width!==this.canvas.width||target.height!==this.canvas.height)throw new Error('Presentation requires a target matching the surface pixel size');
     this.owner.flush();const encoder=this.owner.gpu.createCommandEncoder();
     encoder.copyTextureToTexture({texture:target.color},{texture:this.context.getCurrentTexture()},[target.width,target.height]);
-    this.owner.gpu.queue.submit([encoder.finish()]);await this.owner.poll();
+    this.owner.gpu.queue.submit([encoder.finish()]);
+    // Submission is sufficient for presentation. Allow up to two frames in
+    // flight so input need not wait for a GPU fence after every frame.
+    this.presentations??=new Set();
+    const done=this.owner.gpu.queue.onSubmittedWorkDone();this.presentations.add(done);
+    done.then(()=>this.presentations.delete(done),()=>this.presentations.delete(done));
+    if(this.presentations.size>=2)await this.presentations.values().next().value;
   }
   dispose(){this.context.unconfigure();}
 }

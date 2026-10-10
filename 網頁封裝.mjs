@@ -1,4 +1,5 @@
 import { readFile as 讀取, writeFile as 寫入 } from 'node:fs/promises';
+import './即時主機封裝.mjs';
 const 修改=async(檔名,處理)=>寫入(檔名,處理(await 讀取(檔名,'utf8')));
 await 修改('web/index.html',內容=>內容.replace('lang="en"','lang="zh-Hant"').replace('Aquarius WebAssembly','星泉塗鴉室').replace('background:#0c1624','background:#081012').replace('outline:none','outline:none;touch-action:none').replace('<pre id="output"','<pre hidden id="output"').replace('href="data:,"','href="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'%3E%3Cpath fill=\'%23a9e7d8\' d=\'M12 0L15 9L24 12L15 15L12 24L9 15L0 12L9 9Z\'/%3E%3C/svg%3E"'));
 await 修改('web/processing.mjs',內容=>內容.replaceAll('Aquarius text input','星泉文字輸入'));

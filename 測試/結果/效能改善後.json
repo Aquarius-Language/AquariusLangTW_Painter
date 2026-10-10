@@ -1,0 +1,39 @@
+{
+  "idleFrames": {
+    "count": 8,
+    "meanMs": 14.274999983608723,
+    "maxMs": 17.400000035762787
+  },
+  "interactionFrames": {
+    "count": 4,
+    "meanMs": 37.32499998807907,
+    "maxMs": 74.60000002384186
+  },
+  "pointerCallbacks": {
+    "count": 60,
+    "meanMs": 0.34499999980131785,
+    "maxMs": 1.199999988079071
+  },
+  "releaseCallbacks": {
+    "count": 1,
+    "meanMs": 1.300000011920929,
+    "maxMs": 1.300000011920929
+  },
+  "collection": {
+    "count": 13,
+    "meanMs": 0.2384615311255822,
+    "maxMs": 0.699999988079071
+  },
+  "presentation": {
+    "count": 12,
+    "meanMs": 0.24166666467984518,
+    "maxMs": 0.8999999761581421
+  },
+  "wasmMs": 227.8999999165535,
+  "slices": 199,
+  "yields": 16,
+  "firstStrokeFrameMs": 29.69999998807907,
+  "strokeMs": 164.69999998807907,
+  "ink": 1720,
+  "history": 1
+}

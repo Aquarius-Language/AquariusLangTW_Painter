@@ -71,7 +71,10 @@ export class Processing {
     this.processingEvents=true;
     try {
       if(resized){this.redraw=true;if(c.pixelWidth>0&&c.pixelHeight>0)await this.dispatchEvent('windowResized');}
-      for(const e of this.eventQueue.splice(0)){for(const [n,v] of Object.entries(e.fields))this.host.set(this.module,n,v);this.redraw=true;await this.dispatchEvent(e.name);}
+      const eventStart=performance.now(),available=this.eventQueue.length;
+      // Preserve every stroke sample and press/release boundary, but present
+      // between batches instead of draining a slow gesture before drawing it.
+      for(let i=0;i<available;i++){const e=this.eventQueue.shift();for(const [n,v] of Object.entries(e.fields))this.host.set(this.module,n,v);this.redraw=true;await this.dispatchEvent(e.name);if(performance.now()-eventStart>=8)break;}
     } finally {this.processingEvents=false;}
   }
   async dispatchEvent(name){
@@ -95,7 +98,7 @@ export class Processing {
   dispose(){this.exiting=true;this.abort.abort();this.textarea.remove();for(const c of this.canvases)c.dispose();for(const image of this.images)image.texture?.destroy();for(const t of this.textCache.values())t.texture.destroy();this.screen.dispose();this.presentation?.dispose();this.surface?.dispose();}
 }
 class Canvas {
-  constructor(owner,w,h,is3D,module=null){this.owner=owner;this.host=owner.host;this.module=module??this.host.newModule();this.host.objects.set(this.module,this);this.width=this.pixelWidth=w;this.height=this.pixelHeight=h;this.is3D=is3D;this.style=style();this.model=mat4.create();this.view=mat4.create();this.projection=mat4.create();this.matrices=[];this.styles=[];this.sphereU=24;this.sphereV=16;this.vertices=null;this.blend=0;this.drawing=module!==null;this.disposed=false;this.defaultCamera();this.bind();this.state();}
+  constructor(owner,w,h,is3D,module=null){this.owner=owner;this.host=owner.host;this.module=module??this.host.newModule();this.host.objects.set(this.module,this);this.width=this.pixelWidth=w;this.height=this.pixelHeight=h;this.is3D=is3D;this.premultiplied=true;this.style=style();this.model=mat4.create();this.view=mat4.create();this.projection=mat4.create();this.matrices=[];this.styles=[];this.sphereU=24;this.sphereV=16;this.vertices=null;this.blend=0;this.drawing=module!==null;this.disposed=false;this.defaultCamera();this.bind();this.state();}
   state(){for(const n of ['width','height','pixelWidth','pixelHeight'])this.host.set(this.module,n,num(this[n],'int'));}
   live(){if(this.disposed)throw new Error('Canvas is disposed');if(!this.target||!this.drawing)throw new Error('Call size() or beginDraw() first');}
   resize(w,h,pw=w,ph=h){

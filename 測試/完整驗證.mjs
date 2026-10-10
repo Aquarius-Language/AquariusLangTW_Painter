@@ -31,6 +31,15 @@ try{
   const 原=(await 狀態()).位置;await 分頁.mouse.move(450,450);await 分頁.mouse.down();await 分頁.mouse.move(610,450,{steps:10});await 分頁.mouse.up();await 分頁.waitForFunction(原=>window.aquarius.host.processing.events.get('mousePressed').env.get('引擎').scope.get('歷程位置').value>原,原);
   斷言.ok((await 讀色(355,180))[0]<100);await 分頁.keyboard.press('Control+z');await 分頁.waitForFunction(原=>window.aquarius.host.processing.events.get('mousePressed').env.get('引擎').scope.get('歷程位置').value===原,原);斷言.deepEqual(await 讀色(355,180),[255,255,255,255]);await 分頁.keyboard.press('Control+y');await 分頁.waitForFunction(原=>window.aquarius.host.processing.events.get('mousePressed').env.get('引擎').scope.get('歷程位置').value>原,原);斷言.ok((await 讀色(355,180))[0]<100);
  });
+ await 確認('GPU快照透明像素、重做分支與歷程淘汰',async()=>{
+  await 呼叫('新作品',[32,48]);await 呼叫('新增圖層');await 呼叫('設定參數',['前景',4294901760]);await 呼叫('設定參數',['濃度',40]);await 呼叫('設定參數',['粗細',3]);
+  await 呼叫('筆畫',[5,10,20,10,false]);await 呼叫('記錄',['透明筆畫']);const 原色=await 讀色(12,10,1);斷言.ok(原色[3]>0&&原色[3]<255);
+  await 呼叫('筆畫',[5,10,20,10,true]);await 呼叫('記錄',['擦除']);await 呼叫('恢復',[2]);斷言.deepEqual(await 讀色(12,10,1),原色);
+  await 呼叫('恢復',[3]);斷言.equal((await 讀色(12,10,1))[3],0);await 呼叫('恢復',[2]);await 呼叫('筆畫',[5,20,20,20,false]);await 呼叫('記錄',['新的分支']);斷言.equal(await 呼叫('恢復',[4]),false);斷言.deepEqual(await 讀色(12,10,1),原色);
+  await 呼叫('新作品',[32,48]);await 呼叫('設定參數',['前景',4278190080]);await 呼叫('設定參數',['濃度',100]);await 呼叫('設定參數',['粗細',1]);
+  for(let 次=1;次<=20;次++){await 呼叫('筆畫',[5,次*2,20,次*2,false]);await 呼叫('記錄',['筆畫']);}
+  await 呼叫('恢復',[0]);斷言.ok((await 讀色(12,11))[0]<100);斷言.deepEqual(await 讀色(12,14),[255,255,255,255]);
+ });
  await 確認('九種筆刷及圖層透明度與鎖定',async()=>{await 呼叫('新作品',[96,64]);await 呼叫('新增圖層');for(let 種=0;種<9;種++){await 呼叫('設定參數',['筆刷',種]);await 呼叫('筆畫',[8,8+種*5,82,8+種*5,false]);}斷言.equal((await 狀態()).圖層,2);await 呼叫('設定參數',['目前圖層',1]);await 呼叫('處理操作',['鎖定圖層'],'主程式');斷言.equal(await 呼叫('可繪圖'),false);await 呼叫('處理操作',['鎖定圖層'],'主程式');斷言.equal(await 呼叫('可繪圖'),true);});
  await 確認('二十一種形狀可提交與復原',async()=>{await 呼叫('新作品',[96,64]);await 呼叫('設定參數',['填滿',1]);const 名稱=await 分頁.evaluate(()=>window.aquarius.host.processing.events.get('mousePressed').env.get('形狀名稱'));for(const 名 of 名稱){斷言.equal(await 呼叫('提交形狀',[名,10,10,80,50]),true);}斷言.ok((await 狀態()).位置>0);await 呼叫('恢復',[0]);斷言.deepEqual(await 讀色(20,20),[255,255,255,255]);});
  await 確認('掃描線填色與滴管像素',async()=>{await 呼叫('新作品',[96,64]);await 呼叫('設定參數',['前景',4294901760]);await 呼叫('填色區域',[1,1]);斷言.deepEqual(await 讀色(90,55),[255,0,0,255]);await 呼叫('恢復',[0]);斷言.deepEqual(await 讀色(90,55),[255,255,255,255]);});
@@ -68,7 +77,7 @@ try{
   await 分頁.mouse.click(196,103);await 分頁.waitForFunction(()=>window.aquarius.host.processing.events.get('mousePressed').env.get('頁籤')==='常用');await 刷新();
  });
  await 確認('檔案開啟取消、拒絕權限後仍能繪圖',async()=>{await 分頁.bringToFront();await 分頁.evaluate(()=>window.focus());await 分頁.evaluate(()=>{window.showOpenFilePicker=async()=>{throw new DOMException('cancel','AbortError');};});await 呼叫('執行開啟',[],'主程式');await 分頁.evaluate(()=>{window.showOpenFilePicker=async()=>{throw new DOMException('denied','NotAllowedError');};});await 呼叫('設定參數',['已修改',false]);await 分頁.mouse.click(1220,44);await 刷新();斷言.equal((await 狀態()).狀態,'running');await 呼叫('設定參數',['目前圖層',0]);await 呼叫('筆畫',[1,55,30,55,false]);斷言.ok((await 讀色(15,55)).slice(0,3).some(值=>值<200));});
- await 確認('連續操作資源回收與視窗縮放',async()=>{await 呼叫('新作品',[96,64]);for(let 次=0;次<25;次++){await 呼叫('提交形狀',['矩形',3,3,30,30]);await 刷新();}const 資源=await 分頁.evaluate(()=>({畫布:window.aquarius.host.processing.canvases.size,圖片:window.aquarius.host.processing.images.size}));斷言.ok(資源.畫布<12);斷言.ok(資源.圖片<40);await 分頁.setViewportSize({width:1280,height:720});await 刷新();});
+ await 確認('連續操作資源回收與視窗縮放',async()=>{await 呼叫('新作品',[96,64]);for(let 次=0;次<25;次++){await 呼叫('提交形狀',['矩形',3,3,30,30]);await 刷新();}const 除錯=await 上下文.newCDPSession(分頁);await 除錯.send('HeapProfiler.collectGarbage');await 除錯.detach();await 刷新();const 資源=await 分頁.evaluate(()=>({畫布:window.aquarius.host.processing.canvases.size,圖片:window.aquarius.host.processing.images.size}));斷言.ok(資源.畫布<=19,JSON.stringify(資源));斷言.ok(資源.圖片<40);await 分頁.setViewportSize({width:1280,height:720});await 刷新();});
  await 呼叫('處理操作',['確認新建'],'主程式');await 分頁.evaluate(async()=>{const 主機=window.aquarius.host,環=主機.processing.events.get('mousePressed').env,色=await 主機.processing.module.scope.get('color')(27,36,40);await 主機.runtime.invoke(環.get('引擎').scope.get('設定參數'),['前景',色]);環.set('通知','讓靈感，湧成作品。');});await 刷新();await 分頁.screenshot({path:'測試/結果/完成介面.png'});
  斷言.deepEqual(錯誤,[]);const 報告=JSON.stringify({瀏覽器:process.env.AQUARIUS_BROWSER??'msedge',全部通過:true,結果,錯誤},null,2);await 寫檔('測試/結果/驗證報告.json',報告);await 寫檔('測試/結果/'+(process.env.AQUARIUS_BROWSER==='chrome'?'鉻瀏覽器':'邊緣瀏覽器')+'驗證.json',報告);
 }catch(錯){await 分頁.screenshot({path:'測試/結果/失敗.png'});await 寫檔('測試/結果/驗證報告.json',JSON.stringify({全部通過:false,結果,錯誤,失敗:錯.message},null,2));console.error(錯);process.exitCode=1;}
