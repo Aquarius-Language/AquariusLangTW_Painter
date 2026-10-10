@@ -1,8 +1,8 @@
 import {BrowserHost} from './host.mjs';
-import {inspect} from './vm.mjs';
+import {inspect} from './values.mjs';
 const output=document.getElementById('output'),error=document.getElementById('error');
 let bundle,host,controller,execution;
-function showError(e){error.textContent=e.message;error.hidden=false;}
+function showError(e){error.textContent='塗鴉室無法啟動。請以本機伺服器或安全連線開啟，並使用支援圖形加速的新版瀏覽器。';error.hidden=false;console.error('星泉啟動錯誤：',e);}
 async function stop(){const previous=host;if(previous){previous.processing.exiting=true;controller.abort();await execution?.catch(()=>{});await previous.dispose();if(host===previous){host=null;window.aquarius.host=null;}}window.aquarius.state='stopped';}
 async function run(entry=bundle.entry,frames=0){
   await stop();document.getElementById('surfaces').replaceChildren();output.textContent='';error.hidden=true;
@@ -13,7 +13,7 @@ async function run(entry=bundle.entry,frames=0){
 }
 try{
   const response=await fetch('./program.json');if(!response.ok)throw new Error(`Could not load program (${response.status})`);
-  bundle=await response.json();window.aquarius={bundle,run,stop,host:null,state:'ready'};
+  bundle=await response.json();const wasm=await fetch(bundle.wasm);if(!wasm.ok)throw new Error(`Could not load WebAssembly (${wasm.status})`);bundle.compiledModule=await WebAssembly.compile(await wasm.arrayBuffer());window.aquarius={bundle,run,stop,host:null,state:'ready'};
   // Developer/test hooks remain available without adding controls to the game.
   const params=new URLSearchParams(location.search);
   if(params.get('autorun')!=='0')run(bundle.entry,Number(params.get('frames')??0)).catch(e=>{if(!controller?.signal.aborted){showError(e);console.error(e);}});
