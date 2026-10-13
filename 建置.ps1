@@ -1,4 +1,5 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿param([switch]$Android, [switch]$APK)
+$ErrorActionPreference = 'Stop'
 
 Push-Location $PSScriptRoot
 try {
@@ -12,4 +13,10 @@ try {
     & aqua build dist/星泉塗鴉室.wasm --target windows -o dist/星泉塗鴉室.exe
     if ($LASTEXITCODE -ne 0) { throw '桌面輸出失敗。' }
     Write-Output '完成：./dist/星泉塗鴉室.wasm、./web 與 ./dist/星泉塗鴉室.exe。'
+
+    if ($Android -or $APK) {
+        $AndroidOutput = if ($APK) { 'dist/android.apk' } else { ('dist/android-project-' + [Guid]::NewGuid().ToString('N').Substring(0,8)) }
+        & aqua build 'dist/星泉塗鴉室.wasm' --target android -o $AndroidOutput
+        if ($LASTEXITCODE -ne 0) { throw 'Android 建置失敗。' }
+    }
 } finally { Pop-Location }
