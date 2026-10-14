@@ -206,3 +206,21 @@ APK 使用支援 `--target android` 的 AquariusLang 編譯器，另需 JDK 17 �
 .\建置.ps1 -SkipAPK    # 僅建置 WASM、網頁與 Windows EXE
 .\建置.ps1 -Android    # 以新的 dist/android-project-* 專案目錄取代 APK 輸出
 ```
+
+### Android 大畫布效能改善（2026-10-14）
+
+主要改善位於 AquariusLang 共用執行階段：新增 `區域填色／floodFill` 的 Wasm 掃描線圖元、依記憶體壓力排程垃圾回收、批次傳輸數值陣列、延後離屏 GPU 批次提交、直接傳回 Android GPU 像素位元組，以及減少 RGBA／ARGB 轉換的暫存配置。這些改善可供往後以新版編譯器建置的專案使用。
+
+本專案改用官方填色圖元，取消整張工作圖片；直式介面只在內容改變時重建合成，並快取工具按鈕。保留所有拖曳點、填色邊界、透明度及復原歷程。
+
+實測使用 API 35、x86_64 的 Aquarius35 模擬器（`emulator-5556`），沒有使用實體手機。960 × 600 填色由約 30.4 秒降至 0.90 秒；1920 × 1200 由約 195.6 秒降至 3.23 秒。60 點集中拖曳完成時間由 2.70 秒降至 1.72 秒，所有回呼及筆跡端點皆驗證通過。模擬器的呈現耗時仍受 GPU／主機負載影響，不能視為手機的 FPS 或輸入延遲。
+
+詳細原始測量、樣本數及檔案雜湊見 [Android 效能報告](測試/結果/Android效能.md) 與 `測試/結果/Android效能.json`。新版 APK 為 `dist/android.apk`；驗證版本不含效能量測注入程式，並沿用原 APK 的 debug 簽章。
+
+此版原始碼需要支援新填色圖元的編譯器。本機已建立完整編譯器於 `C:\OfficialProjects\AquariusLangTW\dist\releases\AquariusCompiler-win-x64-20261014-painter-performance\aqua\aqua.exe`。若 PATH 仍指向舊版，請使用：
+
+```powershell
+.\建置.ps1 -Compiler 'C:\OfficialProjects\AquariusLangTW\dist\releases\AquariusCompiler-win-x64-20261014-painter-performance\aqua\aqua.exe'
+```
+
+更新既有 debug 安裝時需使用同一把簽章金鑰。本機原 APK 的金鑰位於 `C:\OfficialProjects\AquariusLangTW\.android-build\android-home\debug.keystore`；建置前可將 `ANDROID_USER_HOME` 設為其所在目錄，以保留安裝相容性。

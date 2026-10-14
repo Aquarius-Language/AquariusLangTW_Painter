@@ -1,0 +1,335 @@
+{
+  "date": "2026-10-14",
+  "environment": {
+    "device": "emulator-5556",
+    "avd": "Aquarius35",
+    "api": 35,
+    "abi": "x86_64",
+    "gpu": "host",
+    "resolution": "1080x2400",
+    "physicalPhoneUsed": false
+  },
+  "method": "Production APK on an Android emulator, isolated test harness invoking real compiled callbacks and native GPU presentation/readback. Times include script, transport, GPU and snapshot work. Synthetic burst drag measures processing throughput, not hardware input-to-display latency. Before/after runs can vary with emulator load. The baseline large fill has one completed sample; its second sample was stopped after the first succeeded.",
+  "metrics": [
+    {
+      "name": "60-point drag",
+      "beforeMs": 2700.001099999994,
+      "afterMs": 1717.113699999638,
+      "speedup": 1.572406707838021,
+      "beforeSamples": 1,
+      "afterSamples": 1
+    },
+    {
+      "name": "960 × 600 fill",
+      "beforeMs": 30367.37089999998,
+      "afterMs": 897.6714500002563,
+      "speedup": 33.82904836729664,
+      "beforeSamples": 2,
+      "afterSamples": 2
+    },
+    {
+      "name": "1920 × 1200 fill",
+      "beforeMs": 195551.04799999995,
+      "afterMs": 3231.958149999846,
+      "speedup": 60.505439403665946,
+      "beforeSamples": 1,
+      "afterSamples": 2
+    },
+    {
+      "name": "portrait redraw",
+      "beforeMs": 71.82039999996778,
+      "afterMs": 83.1929999999702,
+      "speedup": 0.8632985948336219,
+      "beforeSamples": 5,
+      "afterSamples": 5
+    }
+  ],
+  "pixelValidation": [
+    {
+      "variant": "candidate-final",
+      "name": "drag pixels",
+      "passed": true,
+      "points": 60
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 960x600 0",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 960x600 1",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 1920x1200 0",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 1920x1200 1",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "complete",
+      "passed": true
+    }
+  ],
+  "baseline": [
+    {
+      "variant": "baseline",
+      "name": "portrait redraw 960x600 0",
+      "ms": 71.82039999996778,
+      "collections": 0,
+      "collectionMs": 0
+    },
+    {
+      "variant": "baseline",
+      "name": "portrait redraw 960x600 1",
+      "ms": 89.75860000000102,
+      "collections": 0,
+      "collectionMs": 0
+    },
+    {
+      "variant": "baseline",
+      "name": "portrait redraw 960x600 2",
+      "ms": 148.73519999999553,
+      "collections": 0,
+      "collectionMs": 0
+    },
+    {
+      "variant": "baseline",
+      "name": "portrait redraw 960x600 3",
+      "ms": 55.48949999996694,
+      "collections": 0,
+      "collectionMs": 0
+    },
+    {
+      "variant": "baseline",
+      "name": "portrait redraw 960x600 4",
+      "ms": 41.48589999997057,
+      "collections": 0,
+      "collectionMs": 0
+    },
+    {
+      "variant": "baseline",
+      "name": "drag first presentation",
+      "ms": 92.47470000002068,
+      "pendingEvents": 61
+    },
+    {
+      "variant": "baseline",
+      "name": "drag 60 points",
+      "ms": 2700.001099999994,
+      "frames": 47
+    },
+    {
+      "variant": "baseline",
+      "name": "fill 960x600 0",
+      "ms": 29117.076699999976,
+      "collections": 474,
+      "collectionMs": 5223.239999999234
+    },
+    {
+      "variant": "baseline",
+      "name": "fill pixels 960x600 0",
+      "passed": true
+    },
+    {
+      "variant": "baseline",
+      "name": "fill 960x600 1",
+      "ms": 31617.665099999984,
+      "collections": 474,
+      "collectionMs": 9507.650400000857
+    },
+    {
+      "variant": "baseline",
+      "name": "fill pixels 960x600 1",
+      "passed": true
+    },
+    {
+      "variant": "baseline",
+      "name": "fill 1920x1200 0",
+      "ms": 195551.04799999995,
+      "collections": 1898,
+      "collectionMs": 105181.04549999861
+    },
+    {
+      "variant": "baseline",
+      "name": "fill pixels 1920x1200 0",
+      "passed": true
+    }
+  ],
+  "candidate": [
+    {
+      "variant": "candidate-final",
+      "name": "portrait redraw 960x600 0",
+      "ms": 153.10210000025108,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 0,
+      "arrayWriteMs": 2.613800000399351,
+      "arrayReadMs": 34.720799999311566,
+      "snapshotMs": 0,
+      "loadPixelsMs": 0,
+      "updatePixelsMs": 0
+    },
+    {
+      "variant": "candidate-final",
+      "name": "portrait redraw 960x600 1",
+      "ms": 99.22750000003725,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 0,
+      "arrayWriteMs": 3.9910999992862344,
+      "arrayReadMs": 0.7814000002108514,
+      "snapshotMs": 0,
+      "loadPixelsMs": 0,
+      "updatePixelsMs": 0
+    },
+    {
+      "variant": "candidate-final",
+      "name": "portrait redraw 960x600 2",
+      "ms": 67.66409999970347,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 0,
+      "arrayWriteMs": 3.497300000395626,
+      "arrayReadMs": 2.6609000000171363,
+      "snapshotMs": 0,
+      "loadPixelsMs": 0,
+      "updatePixelsMs": 0
+    },
+    {
+      "variant": "candidate-final",
+      "name": "portrait redraw 960x600 3",
+      "ms": 83.1929999999702,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 0,
+      "arrayWriteMs": 3.155300000216812,
+      "arrayReadMs": 1.9580000005662441,
+      "snapshotMs": 0,
+      "loadPixelsMs": 0,
+      "updatePixelsMs": 0
+    },
+    {
+      "variant": "candidate-final",
+      "name": "portrait redraw 960x600 4",
+      "ms": 44.79249999998137,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 0,
+      "arrayWriteMs": 1.7483000000938773,
+      "arrayReadMs": 0.5740000000223517,
+      "snapshotMs": 0,
+      "loadPixelsMs": 0,
+      "updatePixelsMs": 0
+    },
+    {
+      "variant": "candidate-final",
+      "name": "drag first presentation",
+      "ms": 228.26199999963865,
+      "pendingEvents": 61
+    },
+    {
+      "variant": "candidate-final",
+      "name": "drag 60 points",
+      "ms": 1717.113699999638,
+      "frames": 15
+    },
+    {
+      "variant": "candidate-final",
+      "name": "drag pixels",
+      "passed": true,
+      "points": 60
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill 960x600 0",
+      "ms": 895.250500000082,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 15.105699999723583,
+      "arrayWriteMs": 48.42150000017136,
+      "arrayReadMs": 261.7456000004895,
+      "snapshotMs": 22.851600000169128,
+      "loadPixelsMs": 359.10699999984354,
+      "updatePixelsMs": 61.24970000004396
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 960x600 0",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill 960x600 1",
+      "ms": 900.0924000004306,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 33.60130000021309,
+      "arrayWriteMs": 28.44909999985248,
+      "arrayReadMs": 379.23059999989346,
+      "snapshotMs": 43.39509999984875,
+      "loadPixelsMs": 299.52350000012666,
+      "updatePixelsMs": 69.3277000002563
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 960x600 1",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill 1920x1200 0",
+      "ms": 3272.3249999997206,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 168.43889999995008,
+      "arrayWriteMs": 148.61700000008568,
+      "arrayReadMs": 1395.8958000000566,
+      "snapshotMs": 183.56810000026599,
+      "loadPixelsMs": 1025.6674999999814,
+      "updatePixelsMs": 157.19180000014603
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 1920x1200 0",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill 1920x1200 1",
+      "ms": 3191.591299999971,
+      "collections": 0,
+      "collectionMs": 0,
+      "gpuReadMs": 66.0918000000529,
+      "arrayWriteMs": 187.4088999996893,
+      "arrayReadMs": 1403.4069999996573,
+      "snapshotMs": 86.13510000007227,
+      "loadPixelsMs": 1080.444000000134,
+      "updatePixelsMs": 206.24699999997392
+    },
+    {
+      "variant": "candidate-final",
+      "name": "fill pixels 1920x1200 1",
+      "passed": true
+    },
+    {
+      "variant": "candidate-final",
+      "name": "complete",
+      "passed": true
+    }
+  ],
+  "sha256": {
+    "星泉塗鴉室.aqua": "0fe1c1b24538da369982a9d5a7fd12ba542bcfaaba3c8ba458559eb02c6a4ed6",
+    "作品引擎.aqua": "fbeb08f3d61d6be073d78229f28fcc9cd9ddb6c33bc0740a636d751f9c6d31b1",
+    "web/wasm-host.mjs": "ec24c903043dd16e797ccd2a263a4e938b9e92d66b799a84be2ccc4e8d681da7",
+    "web/processing.mjs": "45639f4aad4f41d0ffa5829843631cc1bb3f14c4eb4adac9991c6e01b77594ea",
+    "dist/星泉塗鴉室.wasm": "c9f556f7b331b9cde55fd656928e3a7e8af26725529c4e4725896de05dcb3327",
+    "dist/android.apk": "6e1b15a574e4ac1fc96b4b44ea8456b315b7e2f46cc78a00880453314b9a4de3"
+  }
+}

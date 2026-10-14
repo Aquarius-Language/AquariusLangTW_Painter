@@ -1,0 +1,15 @@
+--------- beginning of main
+10-14 10:15:01.596  2083  2104 I Aquarius: 星泉塗鴉室已準備完成。
+10-14 10:15:03.292  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"portrait redraw 960x600 0","ms":71.82039999996778,"collections":0,"collectionMs":0}
+10-14 10:15:03.383  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"portrait redraw 960x600 1","ms":89.75860000000102,"collections":0,"collectionMs":0}
+10-14 10:15:03.534  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"portrait redraw 960x600 2","ms":148.73519999999553,"collections":0,"collectionMs":0}
+10-14 10:15:03.591  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"portrait redraw 960x600 3","ms":55.48949999996694,"collections":0,"collectionMs":0}
+10-14 10:15:03.634  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"portrait redraw 960x600 4","ms":41.48589999997057,"collections":0,"collectionMs":0}
+10-14 10:15:03.734  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"drag first presentation","ms":92.47470000002068,"pendingEvents":61}
+10-14 10:15:06.341  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"drag 60 points","ms":2700.001099999994,"frames":47}
+10-14 10:15:35.881  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"fill 960x600 0","ms":29117.076699999976,"collections":474,"collectionMs":5223.239999999234}
+10-14 10:15:36.320  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"fill pixels 960x600 0","passed":true}
+10-14 10:16:07.942  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"fill 960x600 1","ms":31617.665099999984,"collections":474,"collectionMs":9507.650400000857}
+10-14 10:16:08.483  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"fill pixels 960x600 1","passed":true}
+10-14 10:19:25.381  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"fill 1920x1200 0","ms":195551.04799999995,"collections":1898,"collectionMs":105181.04549999861}
+10-14 10:19:26.892  2083  2104 I Aquarius: PAINTER_PROFILE {"variant":"baseline","name":"fill pixels 1920x1200 0","passed":true}

@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "apkMatchesFinalWasm": true,
+  "sharedHostsMatchFinalWeb": true,
+  "profilingCodeExcluded": true,
+  "binaryGpuReadbackIncluded": true,
+  "signingCertificateSha256": "9c7ac6d3429089cca5c57be2d87f45ba3e3e145904443075f93f90c6aa5f9a8d",
+  "originalSigningCertificatePreserved": true,
+  "emulator": "emulator-5556",
+  "phoneUsed": false
+}
