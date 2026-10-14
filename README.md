@@ -196,4 +196,13 @@ web/                        已建置的完整靜態網站及第三方授權
 
 ## 新版架構建置
 
-建置使用 PATH 中的 `aqua`。執行 `./建置.ps1` 會自動建立 `dist/`，並輸出 `dist/星泉塗鴉室.wasm`、`web/` 網頁與 `dist/星泉塗鴉室.exe` 自包含 Windows EXE。桌面可用 `aqua run dist/星泉塗鴉室.wasm` 執行，網頁由相同檔案輸出。舊 `.bottle` 產物應從原始碼重新編譯。
+建置使用 PATH 中的 `aqua`。執行 `./建置.ps1` 會自動建立 `dist/`，並輸出 `dist/星泉塗鴉室.wasm`、`web/` 網頁、`dist/星泉塗鴉室.exe` 自包含 Windows EXE 與 `dist/android.apk`。桌面可用 `aqua run dist/星泉塗鴉室.wasm` 執行，網頁與 Android 由相同檔案輸出。舊 `.bottle` 產物應從原始碼重新編譯。
+
+APK 使用支援 `--target android` 的 AquariusLang 編譯器，另需 JDK 17 或 21、Android SDK Platform 36 與 Build Tools 35.0.0；請設定 `JAVA_HOME` 與 `ANDROID_HOME`，並允許 Gradle / Maven 相依套件下載。編譯器附 Gradle wrapper，亦可用 `AQUARIUS_GRADLE` 指定現有 Gradle。產物為可安裝的 debug APK；正式發佈需另設 release 簽章。
+
+```powershell
+.\建置.ps1             # WASM、網頁、Windows EXE 與 dist/android.apk
+.\建置.ps1 -APK        # 同上，保留原有明確指定 APK 的用法
+.\建置.ps1 -SkipAPK    # 僅建置 WASM、網頁與 Windows EXE
+.\建置.ps1 -Android    # 以新的 dist/android-project-* 專案目錄取代 APK 輸出
+```
